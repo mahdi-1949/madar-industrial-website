@@ -125,6 +125,33 @@
   window.addEventListener('resize',()=>{if(innerWidth>1050)closeMenu(false)});
  }
 
+
+ const footer=$('.site-footer');
+ const footerColumns=footer?$('.footer-grid>div:not(.footer-intro)',footer):[];
+ const footerDetails=[];
+ footerColumns.forEach(column=>{
+  const heading=$('h3',column);
+  if(!heading)return;
+  const links=$('a',column);
+  const details=document.createElement('details');
+  details.className='footer-nav-group';
+  const summary=document.createElement('summary');
+  summary.appendChild(heading);
+  const linkPanel=document.createElement('div');
+  linkPanel.className='footer-nav-links';
+  links.forEach(link=>linkPanel.appendChild(link));
+  details.append(summary,linkPanel);
+  column.replaceChildren(details);
+  footerDetails.push(details);
+ });
+ if(footerDetails.length){
+  const footerMedia=window.matchMedia('(max-width:760px)');
+  const syncFooterDisclosure=()=>footerDetails.forEach(details=>{details.open=!footerMedia.matches});
+  syncFooterDisclosure();
+  if(footerMedia.addEventListener)footerMedia.addEventListener('change',syncFooterDisclosure);
+  else footerMedia.addListener(syncFooterDisclosure);
+ }
+
  const dialog=$('#search-dialog'),search=$('#global-search'),results=$('#search-results');
  function searchResults(){if(!results)return;const q=norm(search.value);if(!q){results.innerHTML='<p class="search-hint">پیشنهاد: آسیاب، جدایش، آماده‌سازی نمونه یا نگهداری</p>';return}const terms=q.split(/\s+/);const matches=pages.filter(p=>p.slug!='/404/'&&terms.every(t=>norm(p.title).includes(t))).slice(0,9);results.innerHTML=matches.length?matches.map(p=>`<a class="search-result" href="${BASE}${esc(p.slug)}"><span>${esc(p.title)}</span><small>${p.slug.startsWith('/products/')?'تجهیزات':p.slug.startsWith('/articles/')?'دانش‌نامه':'صفحه'}</small></a>`).join(''):'<p class="search-empty">نتیجه‌ای پیدا نشد. نام کوتاه‌تر یا عبارت دیگری وارد کنید.</p>'}
  $$('[data-search-open]').forEach(el=>el.addEventListener('click',()=>{dialog.showModal();searchResults();search.focus()}));
