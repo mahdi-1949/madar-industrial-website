@@ -1,5 +1,6 @@
 'use strict';
 (()=>{
+ const BASE='/madar-industrial-website';
  const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const fa=n=>Number(n).toLocaleString('fa-IR');
@@ -15,20 +16,20 @@
   $$('[data-add]').forEach(el=>{const on=quote.includes(el.dataset.add);el.classList.toggle('is-added',on);el.setAttribute('aria-pressed',String(on));el.textContent=on?'در فهرست استعلام':'افزودن به استعلام'});
   $$('[data-compare]').forEach(el=>el.setAttribute('aria-pressed',String(compare.includes(el.dataset.compare))));
   $$('[data-compare-count]').forEach(el=>el.textContent=fa(compare.length));
-  const float=$('.compare-float');if(float)float.hidden=compare.length===0||location.pathname.startsWith('/compare');
+  const float=$('.compare-float');if(float)float.hidden=compare.length===0||location.pathname.startsWith(BASE+'/compare');
  }
  const find=id=>products.find(p=>p.id===id);
  function quoteItems(){
   const el=$('#quote-items');if(!el)return;
   const selected=quote.map(find).filter(Boolean);
-  el.innerHTML=selected.length?selected.map(p=>`<div class="quote-item"><img src="/assets/${p.id}.svg" alt=""><span>${esc(p.name)}</span><button data-remove-quote="${p.id}" aria-label="حذف ${esc(p.name)}">${icons.close}</button></div>`).join(''):'<p class="quote-empty">هنوز تجهیزی انتخاب نکرده‌اید. می‌توانید بدون انتخاب دستگاه، درخواست مشاوره بنویسید.</p>';
+  el.innerHTML=selected.length?selected.map(p=>`<div class="quote-item"><img src="${BASE}/assets/${p.id}.svg" alt=""><span>${esc(p.name)}</span><button data-remove-quote="${p.id}" aria-label="حذف ${esc(p.name)}">${icons.close}</button></div>`).join(''):'<p class="quote-empty">هنوز تجهیزی انتخاب نکرده‌اید. می‌توانید بدون انتخاب دستگاه، درخواست مشاوره بنویسید.</p>';
  }
  function compareTable(){
   const el=$('#comparison-content');if(!el)return;
   const list=compare.map(find).filter(Boolean);
-  if(!list.length){el.innerHTML='<div class="empty-state"><h2>هنوز تجهیزی برای مقایسه انتخاب نشده است.</h2><p>در کاتالوگ، دکمه مقایسه روی کارت دستگاه را بزنید.</p><a class="button primary" href="/products/">رفتن به کاتالوگ تجهیزات</a></div>';return}
+  if(!list.length){el.innerHTML='<div class="empty-state"><h2>هنوز تجهیزی برای مقایسه انتخاب نشده است.</h2><p>در کاتالوگ، دکمه مقایسه روی کارت دستگاه را بزنید.</p><a class="button primary" href="${BASE}/products/">رفتن به کاتالوگ تجهیزات</a></div>';return}
   const row=(label,key)=>`<tr><th scope="row">${label}</th>${list.map(p=>`<td>${esc(p[key])}</td>`).join('')}</tr>`;
-  el.innerHTML=`<div class="comparison-scroll" role="region" aria-label="جدول مقایسه تجهیزات" tabindex="0"><table class="comparison-table"><caption class="fineprint" style="text-align:right;margin-bottom:18px">${fa(list.length)} تجهیز منتخب · در نمایشگر کوچک، جدول را افقی پیمایش کنید.</caption><thead><tr><th scope="col">نوع تجهیز</th>${list.map(p=>`<td class="compare-product"><img src="/assets/${p.id}.svg" alt="نمای شماتیک ${esc(p.name)}"><h2><a href="/products/${p.id}/">${esc(p.name)}</a></h2><button class="button primary" data-add="${p.id}">افزودن به استعلام</button><br><button class="compare-remove" data-remove-compare="${p.id}">حذف از مقایسه</button></td>`).join('')}</tr></thead><tbody>${row('گروه تجهیز','cat')}${row('کاربرد اصلی','use')}${row('نوع خوراک','feed')}${row('مکانیزم عمومی','mode')}${row('مقیاس بررسی','scale')}${row('اطلاعات لازم','req')}</tbody></table></div><div class="button-row"><a class="button outline" href="/products/">انتخاب تجهیزات بیشتر</a><a class="button primary" href="/quote/">مشاهده فهرست استعلام</a></div>`;
+  el.innerHTML=`<div class="comparison-scroll" role="region" aria-label="جدول مقایسه تجهیزات" tabindex="0"><table class="comparison-table"><caption class="fineprint" style="text-align:right;margin-bottom:18px">${fa(list.length)} تجهیز منتخب · در نمایشگر کوچک، جدول را افقی پیمایش کنید.</caption><thead><tr><th scope="col">نوع تجهیز</th>${list.map(p=>`<td class="compare-product"><img src="${BASE}/assets/${p.id}.svg" alt="نمای شماتیک ${esc(p.name)}"><h2><a href="${BASE}/products/${p.id}/">${esc(p.name)}</a></h2><button class="button primary" data-add="${p.id}">افزودن به استعلام</button><br><button class="compare-remove" data-remove-compare="${p.id}">حذف از مقایسه</button></td>`).join('')}</tr></thead><tbody>${row('گروه تجهیز','cat')}${row('کاربرد اصلی','use')}${row('نوع خوراک','feed')}${row('مکانیزم عمومی','mode')}${row('مقیاس بررسی','scale')}${row('اطلاعات لازم','req')}</tbody></table></div><div class="button-row"><a class="button outline" href="${BASE}/products/">انتخاب تجهیزات بیشتر</a><a class="button primary" href="${BASE}/quote/">مشاهده فهرست استعلام</a></div>`;
   sync();
  }
  document.addEventListener('click',e=>{
@@ -42,7 +43,7 @@
  const menu=$('.mobile-menu-toggle'),nav=$('.mobile-nav');
  if(menu&&nav){menu.addEventListener('click',()=>{const open=menu.getAttribute('aria-expanded')!=='true';menu.setAttribute('aria-expanded',String(open));menu.setAttribute('aria-label',open?'بستن منو':'بازکردن منو');nav.hidden=!open;document.body.classList.toggle('menu-open',open)});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!nav.hidden){nav.hidden=true;menu.setAttribute('aria-expanded','false');document.body.classList.remove('menu-open');menu.focus()}});window.addEventListener('resize',()=>{if(innerWidth>1050){nav.hidden=true;menu.setAttribute('aria-expanded','false');document.body.classList.remove('menu-open')}})}
  const dialog=$('#search-dialog'),search=$('#global-search'),results=$('#search-results');
- function searchResults(){if(!results)return;const q=norm(search.value);if(!q){results.innerHTML='<p class="search-hint">پیشنهاد: آسیاب، جدایش، آماده‌سازی نمونه یا نگهداری</p>';return}const terms=q.split(/\s+/);const matches=pages.filter(p=>p.slug!='/404/'&&terms.every(t=>norm(p.title).includes(t))).slice(0,9);results.innerHTML=matches.length?matches.map(p=>`<a class="search-result" href="${esc(p.slug)}"><span>${esc(p.title)}</span><small>${p.slug.startsWith('/products/')?'تجهیزات':p.slug.startsWith('/articles/')?'دانش‌نامه':'صفحه'}</small></a>`).join(''):'<p class="search-empty">نتیجه‌ای پیدا نشد. نام کوتاه‌تر یا عبارت دیگری وارد کنید.</p>'}
+ function searchResults(){if(!results)return;const q=norm(search.value);if(!q){results.innerHTML='<p class="search-hint">پیشنهاد: آسیاب، جدایش، آماده‌سازی نمونه یا نگهداری</p>';return}const terms=q.split(/\s+/);const matches=pages.filter(p=>p.slug!='/404/'&&terms.every(t=>norm(p.title).includes(t))).slice(0,9);results.innerHTML=matches.length?matches.map(p=>`<a class="search-result" href="${BASE}${esc(p.slug)}"><span>${esc(p.title)}</span><small>${p.slug.startsWith('/products/')?'تجهیزات':p.slug.startsWith('/articles/')?'دانش‌نامه':'صفحه'}</small></a>`).join(''):'<p class="search-empty">نتیجه‌ای پیدا نشد. نام کوتاه‌تر یا عبارت دیگری وارد کنید.</p>'}
  $$('[data-search-open]').forEach(el=>el.addEventListener('click',()=>{dialog.showModal();searchResults();search.focus()}));
  $('[data-search-close]')?.addEventListener('click',()=>dialog.close());
  dialog?.addEventListener('click',e=>{if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close()}});
@@ -69,5 +70,5 @@
  const top=$('.back-top');top?.addEventListener('click',()=>window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'}));window.addEventListener('scroll',()=>top?.classList.toggle('visible',scrollY>550),{passive:true});
  window.addEventListener('storage',()=>{quote=load('madar-quote');compare=load('madar-compare').slice(0,3);sync();quoteItems();compareTable()});
  sync();
- Promise.all([fetch('/assets/products.json').then(r=>{if(!r.ok)throw Error();return r.json()}),fetch('/assets/pages.json').then(r=>{if(!r.ok)throw Error();return r.json()})]).then(([p,pg])=>{products=p;pages=pg;quote=quote.filter(find);compare=compare.filter(find);save();quoteItems();compareTable();filterProducts();if(dialog?.open)searchResults()}).catch(()=>{toast('اطلاعات تکمیلی بارگذاری نشد. صفحه را تازه‌سازی کنید.');});
+ Promise.all([fetch(BASE+'/assets/products.json').then(r=>{if(!r.ok)throw Error();return r.json()}),fetch(BASE+'/assets/pages.json').then(r=>{if(!r.ok)throw Error();return r.json()})]).then(([p,pg])=>{products=p;pages=pg;quote=quote.filter(find);compare=compare.filter(find);save();quoteItems();compareTable();filterProducts();if(dialog?.open)searchResults()}).catch(()=>{toast('اطلاعات تکمیلی بارگذاری نشد. صفحه را تازه‌سازی کنید.');});
 })();
